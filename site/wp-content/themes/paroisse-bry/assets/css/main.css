@@ -1270,6 +1270,15 @@ p.is-style-pb-a-completer {
 .pb-section--nuit .pb-bouton--or { background: var(--pb-or-clair); border-color: var(--pb-or-clair); color: var(--pb-nuit); }
 .pb-section--nuit .pb-bouton--or:hover { background: #fff; border-color: #fff; color: var(--pb-nuit); }
 
+/* Photos (pages et Diorama de l'accueil) */
+.pb-diorama-accueil__figure { margin: 0; }
+.pb-credit--clair { padding: .5rem 0 0; color: rgba(255, 255, 255, .7); }
+.pb-contenu .wp-block-image.pb-photo { margin-inline: 0; }
+.pb-contenu .wp-block-image.pb-photo img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--pb-rayon); }
+.pb-contenu .wp-block-image.pb-photo figcaption { margin-top: .5rem; font-size: .75rem; line-height: 1.4; color: var(--pb-ardoise); text-align: left; }
+.pb-contenu .wp-block-image.pb-photo figcaption a { color: inherit; }
+.pb-diorama-bascule .wp-block-image.pb-photo img { aspect-ratio: 16 / 10; }
+
 /* Venir */
 .pb-venir { display: grid; gap: 2rem; align-items: start; }
 @media (min-width: 900px) {
