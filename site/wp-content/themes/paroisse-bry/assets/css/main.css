@@ -1373,6 +1373,8 @@ p.is-style-pb-a-completer {
 .pb-video__titre { margin-top: .4rem; font-family: var(--pb-titres); font-size: 1.5rem; line-height: 1.2; }
 .pb-video__action { font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
 .pb-video.is-chargee .pb-video__lancer { display: none; }
+a.pb-video__lancer { text-decoration: none; }
+a.pb-video__lancer:hover { color: #fff; }
 .pb-video__note { margin-top: .5rem; font-size: .75rem; line-height: 1.45; color: var(--pb-ardoise); }
 .pb-video__note a { color: inherit; }
 @media (prefers-reduced-motion: reduce) { .pb-video__bouton { transition: none; } }
