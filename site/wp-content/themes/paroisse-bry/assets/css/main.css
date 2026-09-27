@@ -1504,7 +1504,8 @@ p.is-style-pb-a-completer {
 .pb-portrait .pb-portrait__nom { margin: 0; font-size: 1rem; line-height: 1.3; }
 .pb-portrait .pb-portrait__role { margin: 0; font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; color: var(--pb-or, #9A6B1F); }
 .pb-portrait .pb-portrait__nom .pb-a-completer { font-weight: 400; }
-.pb-carte-cep { max-width: 46rem; }
+.pb-portrait .pb-portrait__coord { margin: .15rem 0 0; font-size: .8125rem; line-height: 1.45; overflow-wrap: anywhere; }
+.pb-trombi--cep { margin-bottom: 0; }
 
 /* Encadré bleu nuit */
 .is-style-pb-encadre {
