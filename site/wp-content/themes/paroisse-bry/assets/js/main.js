@@ -68,6 +68,27 @@
 		iframe.focus();
 	} );
 
+	/* Vidéo YouTube : chargée seulement après un clic ------------------------ */
+	doc.addEventListener( 'click', function ( e ) {
+		var declencheur = e.target.closest ? e.target.closest( '[data-pb-video-lancer]' ) : null;
+		if ( ! declencheur ) {
+			return;
+		}
+		var video = declencheur.closest( '[data-pb-video]' );
+		if ( ! video || video.classList.contains( 'is-chargee' ) ) {
+			return;
+		}
+		var iframe = doc.createElement( 'iframe' );
+		iframe.src = video.getAttribute( 'data-pb-video' );
+		iframe.title = video.getAttribute( 'data-pb-video-titre' ) || 'Vidéo';
+		iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+		iframe.allowFullscreen = true;
+		iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+		video.querySelector( '.pb-video__cadre' ).appendChild( iframe );
+		video.classList.add( 'is-chargee' );
+		iframe.focus();
+	} );
+
 	/* Diorama : bascule « jour » / « nuit » --------------------------------- */
 	doc.querySelectorAll( '.pb-diorama-bascule' ).forEach( function ( bloc ) {
 		var jour = bloc.querySelector( ':scope > .pb-diorama-jour' );

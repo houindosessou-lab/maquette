@@ -1325,6 +1325,65 @@ p.is-style-pb-a-completer {
 .pb-carte__lien { font-size: .875rem; }
 .pb-carte.is-chargee .pb-carte__invite { display: none; }
 
+/* Vidéo YouTube (chargée au clic) */
+.pb-video { margin: 0; }
+.pb-video__cadre {
+	position: relative;
+	aspect-ratio: 16 / 9;
+	border-radius: var(--pb-rayon);
+	overflow: hidden;
+	background:
+		radial-gradient(120% 90% at 50% 110%, rgba(154, 107, 31, .35), transparent 60%),
+		repeating-linear-gradient(135deg, rgba(255, 255, 255, .035) 0 14px, transparent 14px 28px),
+		#1E2740;
+}
+.pb-video__cadre iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.pb-video__lancer {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: .6rem;
+	width: 100%;
+	padding: 1.25rem;
+	border: 0;
+	background: none;
+	color: #fff;
+	font: inherit;
+	text-align: center;
+	cursor: pointer;
+}
+.pb-video__bouton {
+	display: grid;
+	place-items: center;
+	width: 4.25rem;
+	height: 4.25rem;
+	border-radius: 50%;
+	background: var(--pb-or);
+	color: #fff;
+	box-shadow: 0 0 0 8px rgba(154, 107, 31, .25);
+	transition: transform .2s ease, box-shadow .2s ease;
+}
+.pb-video__bouton .pb-icone { margin-left: 4px; fill: currentColor; stroke: none; }
+.pb-video__lancer:hover .pb-video__bouton,
+.pb-video__lancer:focus-visible .pb-video__bouton { transform: scale(1.06); box-shadow: 0 0 0 12px rgba(154, 107, 31, .3); }
+.pb-video__lancer:focus-visible { outline: 3px solid var(--pb-or); outline-offset: -3px; }
+.pb-video__titre { margin-top: .4rem; font-family: var(--pb-titres); font-size: 1.5rem; line-height: 1.2; }
+.pb-video__action { font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
+.pb-video.is-chargee .pb-video__lancer { display: none; }
+.pb-video__note { margin-top: .5rem; font-size: .75rem; line-height: 1.45; color: var(--pb-ardoise); }
+.pb-video__note a { color: inherit; }
+@media (prefers-reduced-motion: reduce) { .pb-video__bouton { transition: none; } }
+
+/* Fiche sacrement en deux colonnes (texte + vidéo) */
+.pb-fiche-deux-colonnes { display: grid; gap: 1.75rem; align-items: start; }
+.pb-fiche-deux-colonnes > * { margin: 0 !important; }
+@media (min-width: 900px) {
+	.pb-fiche-deux-colonnes { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 2.5rem; }
+}
+
 /* Denier */
 .pb-denier { background: var(--pb-pierre); border-top: 1px solid var(--pb-filet); padding-block: 2.5rem; }
 .pb-denier__interieur { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 2rem; }
