@@ -122,6 +122,187 @@
 		figure.classList.add( 'is-empile' );
 	} );
 
+	/* Carrousel « À la une » --------------------------------------------------- */
+	doc.querySelectorAll( '[data-pb-carrousel]' ).forEach( function ( car ) {
+		var diapos = Array.prototype.slice.call( car.querySelectorAll( '.pb-diapo' ) );
+		var commandes = car.querySelector( '.pb-carrousel__commandes' );
+		if ( diapos.length < 2 || ! commandes ) {
+			return;
+		}
+		var points = Array.prototype.slice.call( car.querySelectorAll( '[data-pb-aller]' ) );
+		var piste = car.querySelector( '.pb-carrousel__piste' );
+		var boutonPause = car.querySelector( '[data-pb-pause]' );
+		var duree = parseInt( car.getAttribute( 'data-duree' ), 10 ) || 6500;
+		var reduit = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+		var actuel = 0;
+		var minuteur = null;
+		var enPause = reduit; // Pas de défilement automatique si le visiteur l'a demandé.
+		var survol = false;
+
+		car.style.setProperty( '--pb-duree', duree + 'ms' );
+		commandes.hidden = false;
+		car.classList.add( 'is-pret' );
+
+		var majAccessibilite = function () {
+			diapos.forEach( function ( d, i ) {
+				var actif = i === actuel;
+				d.classList.toggle( 'is-active', actif );
+				d.setAttribute( 'aria-hidden', actif ? 'false' : 'true' );
+				d.querySelectorAll( 'a' ).forEach( function ( a ) {
+					if ( actif ) {
+						a.removeAttribute( 'tabindex' );
+					} else {
+						a.setAttribute( 'tabindex', '-1' );
+					}
+				} );
+			} );
+			points.forEach( function ( p, i ) {
+				p.classList.toggle( 'is-active', i === actuel );
+				if ( i === actuel ) {
+					p.setAttribute( 'aria-current', 'true' );
+				} else {
+					p.removeAttribute( 'aria-current' );
+				}
+			} );
+		};
+
+		var relancerJauge = function () {
+			var jauge = points[ actuel ] && points[ actuel ].querySelector( '.pb-carrousel__jauge' );
+			if ( jauge ) {
+				jauge.style.animation = 'none';
+				void jauge.offsetWidth; // Redémarre l'animation CSS.
+				jauge.style.animation = '';
+			}
+		};
+
+		var arreter = function () {
+			window.clearTimeout( minuteur );
+			minuteur = null;
+		};
+
+		var programmer = function () {
+			arreter();
+			if ( enPause || survol || doc.hidden ) {
+				return;
+			}
+			minuteur = window.setTimeout( function () {
+				aller( actuel + 1, false );
+			}, duree );
+		};
+
+		var aller = function ( i, parUtilisateur ) {
+			actuel = ( i + diapos.length ) % diapos.length;
+			majAccessibilite();
+			relancerJauge();
+			piste.setAttribute( 'aria-live', parUtilisateur || enPause ? 'polite' : 'off' );
+			programmer();
+		};
+
+		var basculerPause = function ( valeur ) {
+			enPause = typeof valeur === 'boolean' ? valeur : ! enPause;
+			car.classList.toggle( 'is-en-pause', enPause );
+			boutonPause.setAttribute( 'aria-pressed', enPause ? 'true' : 'false' );
+			boutonPause.querySelector( '.screen-reader-text' ).textContent = enPause ? 'Relancer le défilement' : 'Mettre en pause le défilement';
+			piste.setAttribute( 'aria-live', enPause ? 'polite' : 'off' );
+			relancerJauge();
+			programmer();
+		};
+
+		car.querySelector( '[data-pb-precedent]' ).addEventListener( 'click', function () {
+			aller( actuel - 1, true );
+		} );
+		car.querySelector( '[data-pb-suivant]' ).addEventListener( 'click', function () {
+			aller( actuel + 1, true );
+		} );
+		points.forEach( function ( p ) {
+			p.addEventListener( 'click', function () {
+				aller( parseInt( p.getAttribute( 'data-pb-aller' ), 10 ), true );
+			} );
+		} );
+		boutonPause.addEventListener( 'click', function () {
+			basculerPause();
+		} );
+
+		// Pause pendant le survol et quand le clavier est dans le carrousel.
+		car.addEventListener( 'mouseenter', function () {
+			survol = true;
+			car.classList.add( 'is-survole' );
+			arreter();
+		} );
+		car.addEventListener( 'mouseleave', function () {
+			survol = false;
+			car.classList.remove( 'is-survole' );
+			relancerJauge();
+			programmer();
+		} );
+		car.addEventListener( 'focusin', function () {
+			survol = true;
+			car.classList.add( 'is-survole' );
+			arreter();
+		} );
+		car.addEventListener( 'focusout', function ( e ) {
+			if ( ! car.contains( e.relatedTarget ) ) {
+				survol = false;
+				car.classList.remove( 'is-survole' );
+				relancerJauge();
+				programmer();
+			}
+		} );
+		car.addEventListener( 'keydown', function ( e ) {
+			if ( e.key === 'ArrowRight' ) {
+				e.preventDefault();
+				aller( actuel + 1, true );
+			} else if ( e.key === 'ArrowLeft' ) {
+				e.preventDefault();
+				aller( actuel - 1, true );
+			}
+		} );
+
+		// Glisser du doigt (ou de la souris) pour changer d'actualité.
+		var departX = null;
+		var departY = null;
+		var glisse = false;
+		piste.addEventListener( 'pointerdown', function ( e ) {
+			departX = e.clientX;
+			departY = e.clientY;
+			glisse = false;
+		} );
+		piste.addEventListener( 'pointerup', function ( e ) {
+			if ( departX === null ) {
+				return;
+			}
+			var dx = e.clientX - departX;
+			var dy = e.clientY - departY;
+			if ( Math.abs( dx ) > 45 && Math.abs( dx ) > Math.abs( dy ) ) {
+				glisse = true;
+				aller( dx < 0 ? actuel + 1 : actuel - 1, true );
+			}
+			departX = null;
+		} );
+		// Un glissement ne doit pas ouvrir l'article.
+		piste.addEventListener( 'click', function ( e ) {
+			if ( glisse ) {
+				e.preventDefault();
+				glisse = false;
+			}
+		}, true );
+		piste.addEventListener( 'dragstart', function ( e ) {
+			e.preventDefault();
+		} );
+
+		doc.addEventListener( 'visibilitychange', function () {
+			if ( doc.hidden ) {
+				arreter();
+			} else {
+				relancerJauge();
+				programmer();
+			}
+		} );
+
+		basculerPause( enPause );
+		aller( 0, false );
+	} );
+
 	/* Fiches dépliables : ouverture depuis un lien (#bapteme…) --------------- */
 	var ouvrirDepuisAncre = function () {
 		if ( ! location.hash || location.hash.length < 2 ) {
