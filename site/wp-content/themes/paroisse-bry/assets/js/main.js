@@ -68,6 +68,19 @@
 		iframe.focus();
 	} );
 
+	/* Édito de l'accueil : fondu en bas seulement si le texte est coupé ---- */
+	var extraits = doc.querySelectorAll( '[data-pb-extrait]' );
+	function marquerExtraits() {
+		extraits.forEach( function ( el ) {
+			el.classList.toggle( 'is-coupe', el.scrollHeight > el.clientHeight + 4 );
+		} );
+	}
+	if ( extraits.length ) {
+		marquerExtraits();
+		window.addEventListener( 'resize', marquerExtraits );
+		window.addEventListener( 'load', marquerExtraits );
+	}
+
 	/* Vidéo YouTube : chargée seulement après un clic ------------------------ */
 	doc.addEventListener( 'click', function ( e ) {
 		var declencheur = e.target.closest ? e.target.closest( '[data-pb-video-lancer]' ) : null;

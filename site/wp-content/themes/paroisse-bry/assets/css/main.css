@@ -2158,8 +2158,22 @@ a.pb-coordonnees__moyen { overflow-wrap: anywhere; }
 }
 .pb-edito__titre { margin: .25rem 0 1.25rem; font-family: var(--pb-titres); font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 500; line-height: 1.1; color: var(--pb-nuit); }
 .pb-edito__extrait p { margin: 0 0 1rem; font-size: 1.0625rem; line-height: 1.75; }
+.pb-edito__extrait { position: relative; max-height: 24rem; overflow: hidden; }
+.pb-edito__extrait.is-coupe {
+	-webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), transparent);
+	mask-image: linear-gradient(to bottom, #000 calc(100% - 5rem), transparent);
+}
+@media (min-width: 1150px) {
+	/* La colonne de l'édito prend exactement la hauteur des deux cadres voisins : le texte remplit l'espace, puis s'estompe. */
+	.pb-edito__grille { align-items: stretch; }
+	.pb-edito__texte { display: flex; flex-direction: column; }
+	.pb-edito__texte > * { flex: none; }
+	.pb-edito__texte > .pb-edito__extrait { flex: 1 1 0; min-height: 9rem; max-height: none; }
+	.pb-edito__texte > .pb-boutons { margin-top: 1.25rem; }
+	.pb-edito__auteur { align-self: start; position: static; }
+}
 .pb-edito .pb-boutons { margin-top: 1.5rem; align-items: center; }
-.pb-edito .pb-a-completer { margin: 0; }
+.pb-edito .pb-a-completer { margin: .75rem 0 0; }
 
 /* Signature en fin d'édito (page de l'article) */
 .pb-edito-signature { display: flex; align-items: center; gap: 1rem; margin: 0 0 3rem; padding-top: 1.5rem; border-top: 1px solid var(--pb-filet); }
